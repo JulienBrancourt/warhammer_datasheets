@@ -1,24 +1,32 @@
 import React from "react";
-import logo from "./logo.svg";
+import UnitForm from './components/Unitform'
+// import logo from "./logo.svg";
 import "./App.css";
 
-function App() {
-  const [data, setData] = React.useState(null);
-
-  React.useEffect(() => {
-    fetch("/api")
-      .then((res) => res.json())
-      .then((data) => setData(data.message));
-  }, []);
+const App = () => {
+  const handleSubmit = (formData) => {
+    fetch('/api/units', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(formData)
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log('Enregistrement réussi :', data);
+      })
+      .catch((error) => {
+        console.error('Erreur lors de lenregistrement du document Unit :', error);
+      });
+  };
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>{!data ? "Loading..." : data}</p>
-      </header>
+    <div>
+      <h1>Mon Application</h1>
+      <UnitForm onSubmit={handleSubmit} />
     </div>
   );
-}
+};
 
 export default App;
