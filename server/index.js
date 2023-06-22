@@ -3,6 +3,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const Unit = require('./unitSchema.js');
 
+
 const PORT = process.env.PORT || 3001;
 const app = express();
 
@@ -52,6 +53,7 @@ app.get('/api/units', (req, res) => {
 // Route POST pour créer une nouvelle Unité
 app.post('/api/units', (req, res) => {
   const unitData = req.body;
+  console.log('test')
   console.log('Données reçues :', unitData);
 
   const unit = new Unit(unitData);

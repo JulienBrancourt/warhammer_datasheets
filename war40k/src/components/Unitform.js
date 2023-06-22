@@ -1,112 +1,106 @@
 import React, { useState } from 'react';
 
 const UnitForm = () => {
-  const [formData, setFormData] = useState({
+  const [unitData, setUnitData] = useState({
     nom: '',
     carac: {
-      M: '',
-      E: '',
-      SV: '',
-      PV: '',
-      CD: '',
-      CO: ''
+      M: "",
+      E: "",
+      SV: "",
+      PV: "",
+      CD: "",
+      CO: ""
     }
-    // Autres champs du formulaire
   });
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevFormData) => ({
-      ...prevFormData,
+  const { name, value } = e.target;
+
+  if (name.startsWith('carac.')) {
+    const caracField = name.split('.')[1];
+    setUnitData((prevState) => ({
+      ...prevState,
+      carac: {
+        ...prevState.carac,
+        [caracField]: value
+      }
+    }));
+  } else {
+    setUnitData((prevState) => ({
+      ...prevState,
       [name]: value
     }));
-  };
+  }
+};
 
-  const handleCaracChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      carac: {
-        ...prevFormData.carac,
-        [name]: value
-      }
-    }));
-  };
 
   const handleSubmit = (e) => {
-    e.preventDefault();
-    // Envoyer les données du formulaire au backend ou effectuer des opérations supplémentaires
-    console.log(formData);
-    // Réinitialiser le formulaire
-    setFormData({
-      nom: '',
-      carac: {
-        M: '',
-        E: '',
-        SV: '',
-        PV: '',
-        CD: '',
-        CO: ''
-      }
-      // Réinitialiser les autres champs du formulaire
+  e.preventDefault();
+
+  fetch('/api/units', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(unitData)
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      // Traitement de la réponse de l'API, par exemple, afficher un message de succès
+      console.log('Unité créée avec succès:', data);
+
+      // Réinitialiser les valeurs du formulaire
+      setUnitData({
+        nom: '',
+        carac: {
+          M: "",
+          E: "",
+          SV: "",
+          PV: "",
+          CD: "",
+          CO: ""
+        }
+      });
+    })
+    .catch((error) => {
+      // Gestion des erreurs
+      console.error('Erreur lors de la création de l\'unité:', error);
     });
-  };
+};
+
 
   return (
     <form onSubmit={handleSubmit}>
-      <label>
-        Nom:
-        <input
-          type="text"
-          name="nom"
-          value={formData.nom}
-          onChange={handleChange}
-        />
-      </label>
-      <br />
-      <label>
-        Caractéristiques:
-        <br />
-        M: <input
-          type="number"
-          name="M"
-          value={formData.carac.M}
-          onChange={handleCaracChange}
-        />
-        E: <input
-          type="number"
-          name="E"
-          value={formData.carac.E}
-          onChange={handleCaracChange}
-        />
-        SV: <input
-          type="number"
-          name="SV"
-          value={formData.carac.SV}
-          onChange={handleCaracChange}
-        />
-        PV: <input
-          type="number"
-          name="PV"
-          value={formData.carac.PV}
-          onChange={handleCaracChange}
-        />
-        CD: <input
-          type="number"
-          name="CD"
-          value={formData.carac.CD}
-          onChange={handleCaracChange}
-        />
-        CO: <input
-          type="number"
-          name="CO"
-          value={formData.carac.CO}
-          onChange={handleCaracChange}
-        />
-      </label>
-      <br />
-      {/* Ajoutez les autres champs du formulaire */}
-      <button type="submit">Enregistrer</button>
+      <div>
+        <label htmlFor="nom">Nom :</label>
+        <input type="text" id="nom" name="nom" value={unitData.nom} onChange={handleChange} />
+      </div>
+      <div>
+        <label htmlFor="m">M :</label>
+        <input type="number" id="m" name="carac.M" value={unitData.carac.M} onChange={handleChange} />
+      </div>
+      <div>
+        <label htmlFor="e">E :</label>
+        <input type="number" id="e" name="carac.E" value={unitData.carac.E} onChange={handleChange} />
+      </div>
+      <div>
+        <label htmlFor="sv">SV :</label>
+        <input type="number" id="sv" name="carac.SV" value={unitData.carac.SV} onChange={handleChange} />
+      </div>
+      <div>
+        <label htmlFor="pv">PV :</label>
+        <input type="number" id="pv" name="carac.PV" value={unitData.carac.PV} onChange={handleChange} />
+      </div>
+      <div>
+        <label htmlFor="cd">CD :</label>
+        <input type="number" id="cd" name="carac.CD" value={unitData.carac.CD} onChange={handleChange} />
+      </div>
+      <div>
+        <label htmlFor="co">CO :</label>
+        <input type="number" id="co" name="carac.CO" value={unitData.carac.CO} onChange={handleChange} />
+      </div>
+      
+      <button type="submit">Créer</button>
     </form>
   );
 };
